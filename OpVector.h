@@ -11,6 +11,10 @@
 
 //includes
 //#include "PrintHeader.h"
+
+#include <iostream>
+#include <cmath>
+#include <fstream>
 using namespace std;
 
 //vector template class type Type
@@ -21,6 +25,7 @@ private:
     int numElemSize;    //number of elements in vecList
     int maxSize;        //max number of elements that vecList can Hold
     Type *vecList;      //vecList
+    void Reserve(); 
     
 public:
     //Default constructor
@@ -47,7 +52,7 @@ public:
     
     //Setters
     void PushBack(const Type & value);       //add new element
-    void Reserve();                          //update maxsize = elemesize * 2
+                             //update maxsize = elemesize * 2
     //void Resize(int numElemSize);            //update new elements size
     
     //Getters
@@ -144,7 +149,6 @@ OpVector<Type> & OpVector<Type>::operator=(const OpVector<Type> & rhs){
 template<class Type>
 void OpVector<Type>::PushBack(const Type & addElement){
     if(numElemSize >= maxSize){
-        cout << "\nWe need to alloc more memery " <<  endl;
         Reserve();
         vecList[numElemSize++] = addElement; //Add element after reserve
     }else{
@@ -188,19 +192,19 @@ bool OpVector<Type>::IsEmpty()const{
 //Type elemAt(int index);                  //return element at specific index
 template <class Type>
 Type OpVector<Type>::elemAt(int index)const{
-        return vecList[index];
+    return vecList[index];
 }
 
 //Begin returns address of first element in case..
 template<class Type>
 typename OpVector<Type>::traverse OpVector<Type>::Begin(){
-        return vecList;
+    return vecList;
 }
 
 //End return address of last element
 template<class Type>
 typename OpVector<Type>::traverse OpVector<Type>::End(){
-        return vecList + numElemSize -1;
+    return vecList + numElemSize -1;
 }
 
 //Front
@@ -214,7 +218,7 @@ Type& OpVector<Type>::Front(){
 //Back
 template<class Type>
 Type& OpVector<Type>::Back(){
-        return vecList[NumElemSize() - 1];
+    return vecList[NumElemSize() - 1];
 }
 
 #endif /* OpVector_h */
