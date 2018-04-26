@@ -29,14 +29,14 @@ int leftiness (const point& a, const point& b, const point& Check){
     
 }
 
-double convexArea(const vector<point>& temp){
+double convexArea(const OpVector<point>& temp){
     double result = 0;
     double s, a, b, c;
     
-    point T1 = temp[0], T2=temp[1], T3=temp[2];
+    point T1 = temp.elemAt(0), T2=temp.elemAt(1), T3=temp.elemAt(2);
     
     
-    for (int i =0; i< temp.size() - 2; i++){
+    for (int i =0; i< temp.NumElemSize() - 2; i++){
         a = distance(T1, T2);
         b = distance(T1, T3);
         c = distance(T2, T3);
@@ -44,7 +44,7 @@ double convexArea(const vector<point>& temp){
         s = (a + b + c) * 0.5;
 
         T2 = T3;
-        T3 = temp[i+3];
+        T3 = temp.elemAt(i+3);
         
         result += pow(s * (s-a) * (s-b) * (s-c), 0.5);
     }
@@ -52,35 +52,35 @@ double convexArea(const vector<point>& temp){
     return result;
 }
 
-vector<point> convex_hull(const vector<point>& RHS){
-    vector<point> result;
+OpVector<point> convex_hull(const OpVector<point>& RHS){
+    OpVector<point> result;
     
     // find leftmost
-    point start = RHS[0];
-    point next = RHS[0];
+    point start = RHS.elemAt(0);
+    point next = RHS.elemAt(0);
     bool done = 0;
     
-    for(int i = 1; i<RHS.size(); i++){
-        if (RHS[i].x < start.x)
-            start = RHS[i];
+    for(int i = 1; i<RHS.NumElemSize(); i++){
+        if (RHS.elemAt(i).x < start.x)
+            start = RHS.elemAt(i);
     }
-    result.push_back(start);
+    result.PushBack(start);
     
     while(!done){
     
-        for (int i = 0; i<RHS.size(); i++){
-            if (leftiness(start, next, RHS[i]) == 1){
-                next = RHS[i];
-            }else if (leftiness(start, next, RHS[i]) == 0 && distance(start, next) < distance(start, RHS[i])){
-                next = RHS[i];
+        for (int i = 0; i<RHS.NumElemSize(); i++){
+            if (leftiness(start, next, RHS.elemAt(i)) == 1){
+                next = RHS.elemAt(i);
+            }else if (leftiness(start, next, RHS.elemAt(i)) == 0 && distance(start, next) < distance(start, RHS.elemAt(i))){
+                next = RHS.elemAt(i);
             }
         }
     
-        if (next.x == result[0].x && next.y == result[0].y){
+        if (next.x == result.elemAt(0).x && next.y == result.elemAt(0).y){
             done = 1;
         }
         else {
-            result.push_back(next);
+            result.PushBack(next);
             start = next;
         }
     }
@@ -92,31 +92,32 @@ vector<point> convex_hull(const vector<point>& RHS){
 
 
 
-polygon::polygon():shape(){
+polygon::polygon():shape(1){
     
 }
 
-polygon:: polygon(const vector<point>& temp):shape(){
+polygon:: polygon(const OpVector<point>& temp):shape(1){
+    
     P = temp;
 }
 
 void polygon:: operator + (const point& temp){
-    P.push_back(temp);
+    P.PushBack(temp);
 }
 
 double polygon::area(){
     double result =0;
     
     //create a convex hull
-    vector<point> HULL = convex_hull(P);
+    OpVector<point> HULL = convex_hull(P);
     
-    if (HULL.size() != P.size()){
+    if (HULL.NumElemSize() != P.NumElemSize()){
     // count number of holes, save them as polygons
-        vector<polygon> holes;
+        OpVector<polygon> holes;
         int start = 0;
     
-        for(int i = 1; i<P.size(); i++){
-            if (P[i].x < P[start].x)
+        for(int i = 1; i<P.NumElemSize(); i++){
+            if (P.elemAt(i).x < P.elemAt(start).x)
                 start = i;
         }
         
@@ -126,7 +127,7 @@ double polygon::area(){
         int current = start;
         int next = start +1;
         
-        if (next == P.size())
+        if (next == P.NumElemSize())
             next = 0;
        
         do{
@@ -140,23 +141,23 @@ double polygon::area(){
                 temp + P[current];
                 temp + P[next];
         
-                holes.push_back(temp);
+                holes.PushBack(temp);
                 temp = polygon();
             }
             current ++;
-            if (current == P.size())
+            if (current == P.NumElemSize())
                 current = 0;
             
             next = current +1;
-            if (next == P.size())
+            if (next == P.NumElemSize())
                 next = 0;
             
     
         
         }while (current != start);
         
-        for (int i =0; i<holes.size(); i++){
-            result += holes[i].area();
+        for (int i =0; i<holes.NumElemSize(); i++){
+            result += holes.elemAt(i).area();
         }
         
         return convexArea(HULL) - result;
@@ -167,11 +168,11 @@ double polygon::area(){
 double polygon:: perimeter(){
     double rez = 0;
     
-    for (int i = 0; i<P.size(); i++){
-        if (i+1 != P.size())
-            rez += distance(P[i], P[i+1]);
+    for (int i = 0; i<P.NumElemSize(); i++){
+        if (i+1 != P.NumElemSize())
+            rez += distance(P.elemAt(i), P.elemAt(i+1));
         else
-            rez += distance(P[i], P[0]);
+            rez += distance(P.elemAt(i), P.elemAt(0));
     }
     
     
@@ -181,12 +182,13 @@ double polygon:: perimeter(){
 
 
 
-elipse:: elipse():shape(){
+elipse:: elipse():shape(2){
+    
     majorAxis = 0;
     minorAxis = 0;
 }
 
-elipse:: elipse(const point& c, double r):shape(){
+elipse:: elipse(const point& c, double r):shape(2){
     
     center = c;
     majorAxis = r;
@@ -194,7 +196,8 @@ elipse:: elipse(const point& c, double r):shape(){
     
 }
 
-elipse:: elipse(const point& c, double r1, double r2):shape(){
+elipse:: elipse(const point& c, double r1, double r2):shape(2){
+    
     center = c;
     majorAxis = r1;
     minorAxis = r2;
@@ -228,11 +231,11 @@ double elipse:: perimeter(){
 //};
 
 
-line:: line():shape(){
+line:: line():shape(3){
     
 }
 
-line:: line(const point& temp1, const point& temp2):shape(){
+line:: line(const point& temp1, const point& temp2):shape(3){
     a = temp1;
     b = temp2;
 }
