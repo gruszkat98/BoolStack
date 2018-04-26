@@ -9,17 +9,18 @@
 #ifndef shapes_h
 #define shapes_h
 
-#include <vector>
-#include <iostream>
-#include <cmath>
-using namespace std;
+#include "OpVector.h"
+
+
+
+
 
 struct point{
     double x;
     double y;
-    bool inSet(const vector<point>& set){
-        for (int i = 0; i<set.size(); i++){
-            if(set[i].x == x && set[i].y == y)
+    bool inSet(const OpVector<point>& set){
+        for (int i = 0; i<set.NumElemSize(); i++){
+            if(set.elemAt(i).x == x && set.elemAt(i).y == y)
                 return true;
         }
         return false;
@@ -27,28 +28,30 @@ struct point{
 };
 
 double distance(const point& a, const point& b);
-vector<point> convex_hull(const vector<point>& RHS);
+OpVector<point> convex_hull(const OpVector<point>& RHS);
 int leftiness (const point& a, const point& b, const point& Check);
 double convexArea(const vector<point>& temp);
 
 
 class shape{
+protected:
     int ID;
-public:
-    shape(){ID = 1;};
+    shape(int input){ID = input;};
     virtual void draw(){};
     virtual double area(){return 0;};
     virtual double perimeter(){return 0;};
+public:
+    int getID(){return ID;};
 };
 
 
 
 
 class polygon: public shape{
-    vector<point> P;
+    OpVector<point> P;
 public:
     polygon();
-    polygon(const vector<point>& temp);
+    polygon(const OpVector<point>& temp);
     void operator + (const point& temp);
     
     virtual void draw(){};
@@ -80,6 +83,13 @@ public:
     virtual double perimeter();
 };
 
+
+
+
+
+OpVector<shape*> read(){
+    return OpVector<shape*>();
+}
 
 
 
