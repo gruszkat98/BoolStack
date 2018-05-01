@@ -60,6 +60,7 @@ public:
     int MaxSize() const;                     //get maxsize
     bool IsEmpty() const;                    //check if v is empty
     Type elemAt(int index)const;                  //return element at specific index
+    void clear();                            //clear list
     
     traverse Begin();                        //get pointer to the first element
     traverse End();                          //get pointer to the last element
@@ -122,6 +123,15 @@ OpVector<Type>::OpVector(const OpVector<Type> & copyOpVector){
 template <class Type>
 Type& OpVector<Type>::operator[](int index){
     return vecList[index];
+}
+
+//clear();
+template<class Type>
+void OpVector<Type>::clear(){
+    delete[] vecList;
+    numElemSize = 0;
+    maxSize = 5;
+    vecList = new Type[maxSize];
 }
 
 template <class Type>
