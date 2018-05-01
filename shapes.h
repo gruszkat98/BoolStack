@@ -10,11 +10,6 @@
 #define shapes_h
 
 #include "OpVector.h"
-
-
-
-
-
 struct point{
     double x;
     double y;
@@ -30,22 +25,22 @@ struct point{
 double distance(const point& a, const point& b);
 OpVector<point> convex_hull(const OpVector<point>& RHS);
 int leftiness (const point& a, const point& b, const point& Check);
-double convexArea(const vector<point>& temp);
+double convexArea(const OpVector<point>& temp);
 
 
 class shape{
 protected:
     int ID;
+    string SaveAs;
     shape(int input){ID = input;};
-    virtual void draw(){};
-    virtual double area(){return 0;};
-    virtual double perimeter(){return 0;};
 public:
-    int getID(){return ID;};
+    
+    friend void save(OpVector<shape*> SaveThis);
+    virtual void draw()const{};
+    virtual double area()const{return 0;};
+    virtual double perimeter()const{return 0;};
+    int getID()const{return ID;};
 };
-
-
-
 
 class polygon: public shape{
     OpVector<point> P;
@@ -54,9 +49,9 @@ public:
     polygon(const OpVector<point>& temp);
     void operator + (const point& temp);
     
-    virtual void draw(){};
-    virtual double area();
-    virtual double perimeter();
+    virtual void draw()const{};
+    virtual double area()const;
+    virtual double perimeter()const;
 };
 
 class elipse: public shape{
@@ -68,9 +63,9 @@ public:
     elipse(const point& c, double r);
     elipse(const point& c, double r1, double r2);
     
-    virtual void draw(){};
-    virtual double area();
-    virtual double perimeter();
+    virtual void draw()const{};
+    virtual double area()const;
+    virtual double perimeter()const;
 };
 
 class line: public shape{
@@ -79,20 +74,12 @@ public:
     line();
     line(const point& temp1, const point& temp2);
     
-    virtual void draw(){};
-    virtual double perimeter();
+    virtual void draw()const{};
+    virtual double perimeter()const;
 };
 
 
-
-
-
-OpVector<shape*> read(){
-    return OpVector<shape*>();
-}
-
-
-
-
+OpVector<shape*> read();
+void save(OpVector<shape*> SaveThis);
 
 #endif /* shapes_h */
