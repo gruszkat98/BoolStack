@@ -45,7 +45,7 @@ public:
     
     typedef Type *traverse;               //pointer Type
     
-    //Operators
+    //Operators   0
     Type & operator[] (int index);        //get reference of indexed element (what element do we want to return)
     OpVector<Type> & operator = (const OpVector<Type> & rhs);
     //OpVector& operator += (const OpVector<Type> & rhs);
