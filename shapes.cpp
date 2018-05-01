@@ -1,12 +1,7 @@
-//
-//  shapes.cpp
-//  Proj_Shape
-//
-//  Created by Tomek Gruszka on 4/12/18.
-//  Copyright © 2018 Tomek Gruszka. All rights reserved.
-//
-
 #include "shapes.h"
+
+
+string directory = "/Users/tomekgruszka/Desktop/Proj_Shape/shapes.txt";
 
 
 double distance(const point& a, const point& b){
@@ -93,19 +88,37 @@ OpVector<point> convex_hull(const OpVector<point>& RHS){
 
 
 polygon::polygon():shape(1){
-    
+    shape:: SaveAs = "1 0 ";
 }
 
 polygon:: polygon(const OpVector<point>& temp):shape(1){
+    shape:: SaveAs = "1 0 ";
     
-    P = temp;
+    for (int i=0; i<temp.NumElemSize(); i++){
+        *this + temp.elemAt(i);
+    }
 }
 
 void polygon:: operator + (const point& temp){
+    string demp;
+    
+    demp = to_string(temp.x);
+    demp += " ";
+    demp += to_string(temp.y);
+    demp += " ";
+    
+    shape::SaveAs += demp;
+    
+    int femp = static_cast<int>(shape::SaveAs.at(2));
+    femp++;
+    
+    shape::SaveAs.at(2) = femp;
+    
     P.PushBack(temp);
 }
 
-double polygon::area(){
+
+double polygon::area()const{
     double result =0;
     
     //create a convex hull
@@ -131,15 +144,15 @@ double polygon::area(){
             next = 0;
        
         do{
-            if (P[current].inSet(HULL) &&  !(P[next].inSet(HULL))){
-                temp + P[current];
+            if (P.elemAt(current).inSet(HULL) &&  !(P.elemAt(next).inSet(HULL))){
+                temp + P.elemAt(current);
             }
-            else if(!(P[current].inSet(HULL)) && !(P[next].inSet(HULL))){
-                temp + P[current];
+            else if(!(P.elemAt(current).inSet(HULL)) && !(P.elemAt(next).inSet(HULL))){
+                temp + P.elemAt(current);
             }
-            else if(!(P[current].inSet(HULL)) && (P[next].inSet(HULL))){
-                temp + P[current];
-                temp + P[next];
+            else if(!(P.elemAt(current).inSet(HULL)) && (P.elemAt(next).inSet(HULL))){
+                temp + P.elemAt(current);
+                temp + P.elemAt(next);
         
                 holes.PushBack(temp);
                 temp = polygon();
@@ -165,7 +178,7 @@ double polygon::area(){
         return convexArea(HULL);
 }
 
-double polygon:: perimeter(){
+double polygon:: perimeter()const{
     double rez = 0;
     
     for (int i = 0; i<P.NumElemSize(); i++){
@@ -183,12 +196,21 @@ double polygon:: perimeter(){
 
 
 elipse:: elipse():shape(2){
+    shape::SaveAs = "2 0 0 0 0";
     
     majorAxis = 0;
     minorAxis = 0;
 }
 
 elipse:: elipse(const point& c, double r):shape(2){
+    shape::SaveAs = "2 ";
+    shape::SaveAs += to_string(c.x);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(c.y);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(r);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(r);
     
     center = c;
     majorAxis = r;
@@ -197,17 +219,25 @@ elipse:: elipse(const point& c, double r):shape(2){
 }
 
 elipse:: elipse(const point& c, double r1, double r2):shape(2){
+    shape::SaveAs = "2 ";
+    shape::SaveAs += to_string(c.x);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(c.y);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(r1);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(r2);
     
     center = c;
     majorAxis = r1;
     minorAxis = r2;
 }
 
-double elipse:: area(){
+double elipse:: area()const{
     return M_PI * minorAxis * majorAxis;
 }
 
-double elipse:: perimeter(){
+double elipse:: perimeter()const{
     
     double h = (minorAxis - majorAxis)/ (minorAxis + majorAxis);
     h = pow(h, 2);
@@ -217,31 +247,99 @@ double elipse:: perimeter(){
 }
 
 
-
-
-//class line: public shape{
-//    point a, b;
-//public:
-//    line();
-//    line(point temp1, point temp2);
-    
-//    virtual void draw(){};
-//    virtual double perimeter();
-//    virtual double area();
-//};
-
-
 line:: line():shape(3){
-    
+    shape::SaveAs = "3 0 0 0 0";
 }
 
 line:: line(const point& temp1, const point& temp2):shape(3){
+    shape::SaveAs = "3 ";
+    shape::SaveAs += to_string(temp1.x);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(temp1.y);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(temp2.x);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(temp2.y);
+    
     a = temp1;
     b = temp2;
 }
 
-double line::perimeter(){
+double line::perimeter()const{
     return distance(a, b);
+}
+
+
+OpVector<shape*> read(){
+    
+    ifstream inFile;
+    OpVector<shape*> result;
+    int numOfLines;
+    
+    
+    int temp_ID;
+    int temp_NOP;
+    double temp_D1;
+    double temp_D2;
+    
+    point temp_P;
+    OpVector<point> temp_V;
+    
+    
+    inFile.open(directory);
+    inFile >> numOfLines;
+    
+    
+    for (int i = 0; i<numOfLines; i++){
+        inFile >> temp_ID;
+        switch(temp_ID){
+            case 1:
+                inFile >> temp_NOP;
+                for (int j = 0; j<temp_NOP; j++){
+                    inFile >> temp_P.x >> temp_P.y;
+                    temp_V.PushBack(temp_P);
+                }
+                
+                result.PushBack(new polygon(temp_V));
+                temp_V.clear();
+                
+                break;
+            case 2:
+                inFile >> temp_P.x >> temp_P.y >> temp_D1 >> temp_D2;
+                
+                result.PushBack(new elipse(temp_P, temp_D1, temp_D2));
+                break;
+                
+            case 3:
+                inFile >> temp_P.x >> temp_P.y;
+                temp_V.PushBack(temp_P);
+                inFile >> temp_P.x >> temp_P.y;
+                temp_V.PushBack(temp_P);
+                
+                result.PushBack(new line(temp_V.elemAt(0), temp_V.elemAt(1)));
+                temp_V.clear();
+                
+                break;
+        }
+    }
+    
+    inFile.close();
+    
+    return result;
+    
+}
+
+void save(OpVector<shape*> SaveThis){
+    
+    ofstream outFile;
+    
+    outFile.open(directory);
+    
+    outFile << SaveThis.NumElemSize() <<endl;
+    for (int i=0; i<SaveThis.NumElemSize(); i++){
+        outFile << SaveThis.elemAt(i)->SaveAs <<endl;
+    }
+    
 }
 
 
