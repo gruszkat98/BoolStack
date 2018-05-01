@@ -5,6 +5,13 @@
 #-------------------------------------------------
 
 QT       += core gui
+#-------------------------------------------------
+#
+# Project created by QtCreator 2018-04-26T12:52:53
+#
+#-------------------------------------------------
+
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,12 +33,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    mainDraw.cpp
+    mainDraw.cpp \
+    guestwindow.cpp \
+    customersup.cpp \
+    testimonialwindow.cpp
 
 HEADERS += \
         mainwindow.h \
-    mainDraw.h
+    mainDraw.h \
+    guestwindow.h \
+    customersup.h \
+    testimonialwindow.h
 
 FORMS += \
         mainwindow.ui \
-    mainDraw.ui
+    mainDraw.ui \
+    guestwindow.ui \
+    customersup.ui \
+    customersup.ui \
+    testimonialwindow.ui
