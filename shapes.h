@@ -29,6 +29,8 @@ double convexArea(const OpVector<point>& temp);
 
 
 class shape{
+    shape(const &shape){}
+    shape& operator=(const shape&){}
 protected:
     int ID;
     string SaveAs;
