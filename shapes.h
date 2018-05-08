@@ -29,8 +29,6 @@ double convexArea(const OpVector<point>& temp);
 
 
 class shape{
-    shape(const shape &){}
-    shape& operator=(const shape &){}
 protected:
     int ID;
     string SaveAs;
@@ -38,9 +36,12 @@ protected:
 public:
     
     friend void save(OpVector<shape*> SaveThis);
+    virtual void move(const point& shift){};
     virtual void draw()const{};
     virtual double area()const{return 0;};
     virtual double perimeter()const{return 0;};
+    virtual void setMessege(string messege){};
+    virtual string getMessege(){return string();};
     int getID()const{return ID;};
 };
 
@@ -51,6 +52,7 @@ public:
     polygon(const OpVector<point>& temp);
     void operator + (const point& temp);
     
+    virtual void move(const point& shift);
     virtual void draw()const{};
     virtual double area()const;
     virtual double perimeter()const;
@@ -65,6 +67,7 @@ public:
     elipse(const point& c, double r);
     elipse(const point& c, double r1, double r2);
     
+    virtual void move(const point& shift);
     virtual void draw()const{};
     virtual double area()const;
     virtual double perimeter()const;
@@ -76,12 +79,46 @@ public:
     line();
     line(const point& temp1, const point& temp2);
     
+    virtual void move(const point& shift);
     virtual void draw()const{};
     virtual double perimeter()const;
 };
 
+class text: public shape{
+    point LTcorner;
+    string Mes;
+public:
+    text ();
+    text(string messege, const point& temp);
+    
+    virtual void move(const point& shift);
+    virtual void setMessege(string messege);
+    virtual string getMessege();
+    virtual void draw()const{};
+};
+
+class polyline: public shape{
+    OpVector<point> P;
+public:
+    polyline();
+    polyline(const OpVector<point> temp);
+    
+    virtual void move(const point& shift);
+    virtual void draw()const{}
+};
+
+
+
 
 OpVector<shape*> read();
-void save(OpVector<shape*> SaveThis);
+
+
+OpVector<shape*> sort(const OpVector<shape*>& rhs, bool (*algorithm)(shape* temp1, shape* temp2));
+
+bool sortByPerimeter(shape* temp1, shape* temp2);
+bool sortByArea(shape* temp1, shape* temp2);
+
+
+
 
 #endif /* shapes_h */
