@@ -230,5 +230,5 @@ template<class Type>
 Type& OpVector<Type>::Back(){
     return vecList[NumElemSize() - 1];
 }
-
+//
 #endif /* OpVector_h */
