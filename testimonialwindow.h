@@ -1,6 +1,6 @@
 #ifndef TESTIMONIALWINDOW_H
 #define TESTIMONIALWINDOW_H
-
+//
 #include <QMainWindow>
 
 namespace Ui {
