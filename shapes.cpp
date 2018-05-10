@@ -1,7 +1,7 @@
 #include "shapes.h"
 
 
-string directory = "shapes.txt";
+string directory = "/Users/tomekgruszka/Desktop/Proj_Shape/shapes.txt";
 
 
 double distance(const point& a, const point& b){
@@ -87,33 +87,43 @@ OpVector<point> convex_hull(const OpVector<point>& RHS){
 
 
 
-polygon::polygon():shape(1){
-    shape:: SaveAs = "1 0 ";
+polygon::polygon():shape(1, 1, 0, 0, 0, 0, 0, 0, 0){
+    shape:: SaveAs = "1 0 0 0 0 0 0 0 1 0";
 }
 
-polygon:: polygon(const OpVector<point>& temp):shape(1){
-    shape:: SaveAs = "1 0 ";
+polygon:: polygon(const OpVector<point>& temp, int temp_weight, double temp_rotation, int color1, int color2, int color3, int colorF1, int colorF2, int colorF3):shape(1, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3){
     
-    for (int i=0; i<temp.NumElemSize(); i++){
-        *this + temp.elemAt(i);
+    P = temp;
+    
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape:: SaveAs += " 1 ";
+    shape:: SaveAs += to_string(temp.NumElemSize());
+    shape:: SaveAs += " ";
+    
+    for (int i =0; i<temp.NumElemSize(); i++){
+        shape:: SaveAs += to_string(temp[i].x);
+        shape:: SaveAs += " ";
+        shape:: SaveAs += to_string(temp[i].y);
+        shape:: SaveAs += " ";
     }
+    
 }
 
-void polygon:: operator + (const point& temp){
-    string demp;
-    
-    demp = to_string(temp.x);
-    demp += " ";
-    demp += to_string(temp.y);
-    demp += " ";
-    
-    shape::SaveAs += demp;
-    
-    int femp = static_cast<int>(shape::SaveAs.at(2));
-    femp++;
-    
-    shape::SaveAs.at(2) = femp;
-    
+void polygon:: operator + (const point& temp){    
     P.PushBack(temp);
 }
 
@@ -155,7 +165,8 @@ double polygon::area()const{
                 temp + P.elemAt(next);
         
                 holes.PushBack(temp);
-                temp = polygon();
+                temp.~polygon();
+                polygon temp;
             }
             current ++;
             if (current == P.NumElemSize())
@@ -194,8 +205,22 @@ double polygon:: perimeter()const{
 
 
 void polygon:: move(const point &shift){
-    
-    shape:: SaveAs = "1 ";
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape:: SaveAs += " 1 ";
     shape:: SaveAs += to_string(P.NumElemSize());
     shape:: SaveAs += " ";
     for (int i = 0; i<P.NumElemSize(); i++){
@@ -205,22 +230,38 @@ void polygon:: move(const point &shift){
         shape:: SaveAs += to_string(P[i].y);
         shape:: SaveAs += " ";
     }
+    
 }
 
 
 
 
 
-elipse:: elipse():shape(2){
-    shape::SaveAs = "2 0 0 0 0";
+elipse:: elipse():shape(2, 1, 0, 0, 0, 0, 0, 0, 0){
+    shape::SaveAs = "1 0 0 0 0 0 0 0 2 0 0 0 0";
     center = {0,0};
     
     majorAxis = 0;
     minorAxis = 0;
 }
 
-elipse:: elipse(const point& c, double r):shape(2){
-    shape::SaveAs = "2 ";
+elipse:: elipse(const point& c, double r, int temp_weight, double temp_rotation, int color1, int color2, int color3, int colorF1, int colorF2, int colorF3):shape(2, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3){
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape::SaveAs += " 2 ";
     shape::SaveAs += to_string(c.x);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(c.y);
@@ -228,6 +269,8 @@ elipse:: elipse(const point& c, double r):shape(2){
     shape::SaveAs += to_string(r);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(r);
+    shape::SaveAs += " ";
+    
     
     center = c;
     majorAxis = r;
@@ -235,8 +278,23 @@ elipse:: elipse(const point& c, double r):shape(2){
     
 }
 
-elipse:: elipse(const point& c, double r1, double r2):shape(2){
-    shape::SaveAs = "2 ";
+elipse:: elipse(const point& c, double r1, double r2, int temp_weight, double temp_rotation, int color1, int color2, int color3, int colorF1, int colorF2, int colorF3):shape(2, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3){
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape::SaveAs += " 2 ";
     shape::SaveAs += to_string(c.x);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(c.y);
@@ -244,6 +302,7 @@ elipse:: elipse(const point& c, double r1, double r2):shape(2){
     shape::SaveAs += to_string(r1);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(r2);
+    
     
     center = c;
     majorAxis = r1;
@@ -266,7 +325,22 @@ double elipse:: perimeter()const{
 void elipse:: move(const point &shift){
     center = {center.x + shift.x, center.y + shift.y};
     
-    shape::SaveAs = "2 ";
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape::SaveAs += " 2 ";
     shape::SaveAs += to_string(center.x);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(center.y);
@@ -274,15 +348,31 @@ void elipse:: move(const point &shift){
     shape::SaveAs += to_string(majorAxis);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(minorAxis);
+    
 }
 
 
-line:: line():shape(3){
-    shape::SaveAs = "3 0 0 0 0";
+line:: line():shape(3, 1, 0, 0, 0, 0, 0, 0, 0){
+    shape::SaveAs = "1 0 0 0 0 0 0 0 3 0 0 0 0";
 }
 
-line:: line(const point& temp1, const point& temp2):shape(3){
-    shape::SaveAs = "3 ";
+line:: line(const point& temp1, const point& temp2, int temp_weight, double temp_rotation, int color1, int color2, int color3, int colorF1, int colorF2, int colorF3):shape(3, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3){
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape::SaveAs += " 3 ";
     shape::SaveAs += to_string(temp1.x);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(temp1.y);
@@ -290,6 +380,7 @@ line:: line(const point& temp1, const point& temp2):shape(3){
     shape::SaveAs += to_string(temp2.x);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(temp2.y);
+    
     
     a = temp1;
     b = temp2;
@@ -303,7 +394,22 @@ void line:: move(const point &shift){
     a = {a.x +shift.x, a.y +shift.y};
     b = {b.x +shift.x, b.y +shift.y};
     
-    shape::SaveAs = "3 ";
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape::SaveAs += " 3 ";
     shape::SaveAs += to_string(a.x);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(a.y);
@@ -311,33 +417,67 @@ void line:: move(const point &shift){
     shape::SaveAs += to_string(b.x);
     shape::SaveAs += " ";
     shape::SaveAs += to_string(b.y);
+    
 }
 
 
-text:: text():shape(4){
+text:: text():shape(4, 1, 0, 0, 0, 0, 0, 0, 0){
     LTcorner = {0,0};
-    shape:: SaveAs = "4 0 0 TEXT";
+    shape:: SaveAs = "1 0 0 0 0 0 0 0 4 0 0 TEXT";
     Mes = "TEXT";
 }
 
-text:: text(string messege, const point& temp):shape(4){
-    shape:: SaveAs = "4 ";
+text:: text(string messege, const point& temp, int temp_weight, double temp_rotation, int color1, int color2, int color3, int colorF1, int colorF2, int colorF3):shape(4, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3){
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape:: SaveAs += " 4 ";
     shape:: SaveAs += to_string(temp.x);
     shape:: SaveAs += " ";
     shape:: SaveAs += to_string(temp.y);
     shape:: SaveAs += " ";
     shape:: SaveAs += messege;
+    
     Mes = messege;
     LTcorner = temp;
 }
 
 void text:: setMessege(string messege){
-    shape:: SaveAs = "4 ";
+    
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape:: SaveAs += " 4 ";
     shape:: SaveAs += to_string(LTcorner.x);
     shape:: SaveAs += " ";
     shape:: SaveAs += to_string(LTcorner.y);
     shape:: SaveAs += " ";
     shape:: SaveAs += messege;
+    
     
     Mes = messege;
 }
@@ -346,12 +486,28 @@ void text:: setMessege(string messege){
 void text:: move(const point &shift){
     LTcorner = {LTcorner.x + shift.x, LTcorner.y + shift.y};
     
-    shape:: SaveAs = "4 ";
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape:: SaveAs += " 4 ";
     shape:: SaveAs += to_string(LTcorner.x);
     shape:: SaveAs += " ";
     shape:: SaveAs += to_string(LTcorner.y);
     shape:: SaveAs += " ";
     shape:: SaveAs += Mes;
+    
     
 }
 
@@ -361,13 +517,29 @@ string text:: getMessege(){
 
 
 
-polyline:: polyline():shape(5){
-    shape:: SaveAs = "5 0";
+polyline:: polyline():shape(5, 1, 0, 0, 0, 0, 0, 0, 0){
+    shape:: SaveAs = "1 0 0 0 0 0 0 0 5 0";
 }
 
-polyline:: polyline(const OpVector<point> temp):shape(5){
+polyline:: polyline(const OpVector<point> temp, int temp_weight, double temp_rotation, int color1, int color2, int color3, int colorF1, int colorF2, int colorF3):shape(5, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3){
     P = temp;
-    shape:: SaveAs = "5 ";
+    
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape:: SaveAs += " 5 ";
     shape:: SaveAs += to_string(temp.NumElemSize());
     shape:: SaveAs += " ";
     for (int i = 0; i<temp.NumElemSize(); i++){
@@ -377,10 +549,27 @@ polyline:: polyline(const OpVector<point> temp):shape(5){
         shape:: SaveAs += " ";
         
     }
+    
+    
 }
 
 void polyline:: move(const point &shift){
-    shape:: SaveAs = "5 ";
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape:: SaveAs += " 5 ";
     shape:: SaveAs += to_string(P.NumElemSize());
     shape:: SaveAs += " ";
     for (int i = 0; i<P.NumElemSize(); i++){
@@ -390,7 +579,71 @@ void polyline:: move(const point &shift){
         shape:: SaveAs += to_string(P[i].y);
         shape:: SaveAs += " ";
     }
+    
 }
+
+rectangle:: rectangle(const point& temp, double width, double length, int temp_weight, double temp_rotation, int color1, int color2, int color3, int colorF1, int colorF2, int colorF3): shape(6, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3)
+{
+    w = width;
+    l = length;
+    
+    LTcorner = temp;
+    
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape::SaveAs += " 6 ";
+    shape::SaveAs += to_string(LTcorner.x);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(LTcorner.y);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(w);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(l);
+    
+}
+
+void rectangle:: move(const point& shift){
+    LTcorner = {LTcorner.x + shift.x, LTcorner.y + shift.y};
+    
+    shape:: SaveAs = to_string(LineWeight);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(Rotation);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(LineColor_B);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_R);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_G);
+    shape:: SaveAs += " ";
+    shape:: SaveAs += to_string(FillColor_B);
+    shape::SaveAs += " 6 ";
+    shape::SaveAs += to_string(LTcorner.x);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(LTcorner.y);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(w);
+    shape::SaveAs += " ";
+    shape::SaveAs += to_string(l);
+    
+}
+
 
 
 
@@ -404,9 +657,20 @@ OpVector<shape*> read(){
     
     int temp_ID;
     int temp_NOP;
+    int temp_weight;
+    double temp_rotation;
     double temp_D1;
     double temp_D2;
     string temp_S;
+    
+    int color1;
+    int color2;
+    int color3;
+    
+    int colorF1;
+    int colorF2;
+    int colorF3;
+
     
     point temp_P;
     OpVector<point> temp_V;
@@ -417,6 +681,12 @@ OpVector<shape*> read(){
     
     
     for (int i = 0; i<numOfLines; i++){
+        
+        inFile >> temp_weight;
+        inFile >> temp_rotation;
+        inFile >> color1 >> color2 >> color3;
+        inFile >> colorF1 >> colorF2 >> colorF3;
+        
         inFile >> temp_ID;
         switch(temp_ID){
             case 1:
@@ -426,14 +696,14 @@ OpVector<shape*> read(){
                     temp_V.PushBack(temp_P);
                 }
                 
-                result.PushBack(new polygon(temp_V));
+                result.PushBack(new polygon(temp_V, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3));
                 temp_V.clear();
-                
+            
                 break;
             case 2:
                 inFile >> temp_P.x >> temp_P.y >> temp_D1 >> temp_D2;
                 
-                result.PushBack(new elipse(temp_P, temp_D1, temp_D2));
+                result.PushBack(new elipse(temp_P, temp_D1, temp_D2, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3));
                 break;
                 
             case 3:
@@ -442,7 +712,7 @@ OpVector<shape*> read(){
                 inFile >> temp_P.x >> temp_P.y;
                 temp_V.PushBack(temp_P);
                 
-                result.PushBack(new line(temp_V.elemAt(0), temp_V.elemAt(1)));
+                result.PushBack(new line(temp_V.elemAt(0), temp_V.elemAt(1), temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3));
                 temp_V.clear();
                 
                 break;
@@ -452,7 +722,7 @@ OpVector<shape*> read(){
                 getline(inFile, temp_S);
                 temp_S = temp_S.substr(1, temp_S.size() -1);
                 
-                result.PushBack(new text(temp_S, temp_P));
+                result.PushBack(new text(temp_S, temp_P, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3));
                 break;
                 
             case 5:
@@ -462,10 +732,15 @@ OpVector<shape*> read(){
                     temp_V.PushBack(temp_P);
                 }
                 
-                result.PushBack(new polyline(temp_V));
+                result.PushBack(new polyline(temp_V, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3));
                 temp_V.clear();
                 
                 break;
+                
+            case 6:
+                inFile >> temp_P.x >> temp_P.y >> temp_D1 >> temp_D2;
+                
+                result.PushBack(new rectangle(temp_P, temp_D1, temp_D2, temp_weight, temp_rotation, color1, color2, color3, colorF1, colorF2, colorF3));
         }
     }
     
@@ -483,7 +758,7 @@ void save(OpVector<shape*> SaveThis){
     
     outFile << SaveThis.NumElemSize() <<endl;
     for (int i=0; i<SaveThis.NumElemSize(); i++){
-        outFile << SaveThis.elemAt(i)->SaveAs <<endl;
+        outFile << SaveThis[i]->SaveAs <<endl;
     }
     
 }
